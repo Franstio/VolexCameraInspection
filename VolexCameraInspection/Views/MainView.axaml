@@ -1,0 +1,122 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="clr-namespace:VolexCameraInspection.ViewModels"
+             mc:Ignorable="d" d:DesignWidth="1920" d:DesignHeight="1080"
+             x:Class="VolexCameraInspection.Views.MainView"
+			 xmlns:bb="clr-namespace:VolexCameraInspection.Behaviours"
+			 
+			 Background="#E5E7EB"
+			 Foreground="#1F2937"
+             x:DataType="vm:MainViewModel">
+	<UserControl.Styles>
+		<Style Selector="Border.content">
+			<Setter Property="BorderBrush" Value="Black"/>
+			<Setter Property="BorderThickness" Value="2"/>
+			<Setter Property="CornerRadius" Value="3"/>
+			<Setter Property="Padding" Value="10"/>
+		</Style>
+		<Style Selector="TextBox">
+			<Setter Property="FontSize" Value="32"/>
+			<Setter Property="BorderBrush" Value="#3b82f6"/>
+			<Setter Property="Background" Value="#3b82f6"/>
+			<Setter Property="Foreground" Value="White"/>
+			<Setter Property="CaretBrush" Value="Black"/>
+		</Style>
+		<Style Selector="TextBlock">
+			<Setter Property="FontSize" Value="32"/>
+		</Style>
+		<Style Selector="Label">
+			<Setter Property="FontSize" Value="24"/>
+		</Style>
+		<Style Selector="TextBox:focus-within">
+			<Setter Property="Foreground" Value="Black"/>
+		</Style>
+		<Style Selector="TextBox:focus-within /template/ Border">
+			<Setter Property="Background" Value="White"/>
+		</Style>
+		<Style Selector="DockPanel > :is(Border)">
+			<Setter Property="Margin" Value="10,1,10,1"/>
+		</Style>
+	</UserControl.Styles>
+	<DockPanel VerticalAlignment="Stretch" VerticalSpacing="10"  >
+		<Menu DockPanel.Dock="Top" Foreground="White" Padding="0" Background="#1e3a8a">
+			<MenuItem Foreground="White" FontWeight="Bold" Command="{Binding OpenConfigCommand}" Header="_Config"></MenuItem>
+		</Menu>
+		<Border Classes.content="True" DockPanel.Dock="Top" >
+			<Grid ColumnSpacing="5"  RowDefinitions="auto" ColumnDefinitions="33*,33*,33*">
+				<StackPanel Grid.Column="0" Spacing="3">
+					<Label>Badge ID:</Label>
+					<TextBox Name="scan1"  Text="{Binding ScanBadge}" bb:ControlFocusBehaviour.IsFocused="{Binding FocusBadge}"  Watermark="Scan Badge ID">
+						<TextBox.KeyBindings>
+							<KeyBinding Command="{Binding ScanTextCommand}" Gesture="Enter"/>
+						</TextBox.KeyBindings>
+					</TextBox>
+				</StackPanel>
+				<StackPanel Grid.Column="1" Spacing="3">
+					<Label>Work Order Number:</Label>
+					<TextBox Text="{Binding ScanWorkNumber}" bb:ControlFocusBehaviour.IsFocused="{Binding FocusWorkNumber}" Watermark="Scan Work Order">
+						<TextBox.KeyBindings>
+							<KeyBinding Command="{Binding ScanTextCommand}" Gesture="Enter"/>
+						</TextBox.KeyBindings>
+					</TextBox>
+				</StackPanel>
+				<StackPanel  Grid.Column="2" Spacing="3">
+					<Label>Part Number:</Label>
+					<TextBox Text="{Binding ScanPartNumber}" bb:ControlFocusBehaviour.IsFocused="{Binding FocusPartNumber}" Watermark="Scan Part Number">
+						<TextBox.KeyBindings>
+							<KeyBinding Command="{Binding ScanTextCommand}" Gesture="Enter"/>
+						</TextBox.KeyBindings>
+					</TextBox>
+				</StackPanel>
+			</Grid> 
+		</Border>
+		<Border DockPanel.Dock="Top" Classes.content="True" Background="White" >
+			<TextBlock HorizontalAlignment="Stretch"  TextAlignment="Center" Text="Judgement Result"/>
+		</Border>
+		<Border DockPanel.Dock="Top" Background="White" Classes.content="True" >
+			<UniformGrid Rows="1" ColumnSpacing="10" RowSpacing="10"  Columns="2" HorizontalAlignment="Stretch"  >
+				<Border Classes.content="True">
+					<StackPanel>
+						<TextBlock TextAlignment="Center" HorizontalAlignment="Stretch" Text="LEFT" FontWeight="Bold"/>
+						<ItemsRepeater VerticalAlignment="Center" ItemsSource="{Binding LeftImages}">
+							<ItemsRepeater.Layout>
+								<UniformGridLayout   MinRowSpacing="5" MaximumRowsOrColumns="2" ItemsJustification="SpaceBetween"  MinColumnSpacing="5" />
+							</ItemsRepeater.Layout>
+							<ItemsRepeater.ItemTemplate>
+							<DataTemplate>
+								<Border Height="300" Width="300">
+									<Image Stretch="UniformToFill" StretchDirection="DownOnly" Source="/Assets/camera.png"/>
+								</Border>
+							</DataTemplate>
+							</ItemsRepeater.ItemTemplate>
+						</ItemsRepeater>
+					</StackPanel>
+				</Border>
+				<Border Background="White" Classes.content="True">
+					<StackPanel>
+						<TextBlock TextAlignment="Center" FontWeight="Bold" HorizontalAlignment="Stretch" Text="RIGHT"/>
+						<ItemsRepeater VerticalAlignment="Center" ItemsSource="{Binding LeftImages}">
+							<ItemsRepeater.Layout>
+								<UniformGridLayout   MinRowSpacing="5" MaximumRowsOrColumns="2" ItemsJustification="SpaceBetween"  MinColumnSpacing="5" />
+							</ItemsRepeater.Layout>
+							<ItemsRepeater.ItemTemplate>
+								<DataTemplate>
+									<Border Height="300" Width="300">
+										<Image Stretch="UniformToFill" StretchDirection="DownOnly" Source="/Assets/camera.png"/>
+									</Border>
+								</DataTemplate>
+							</ItemsRepeater.ItemTemplate>
+						</ItemsRepeater>
+					</StackPanel>
+				</Border>
+			</UniformGrid>
+		</Border>
+
+
+		<Border DockPanel.Dock="Bottom" Classes.content="True" Background="White" >
+			<TextBlock HorizontalAlignment="Stretch" VerticalAlignment="Center"  TextAlignment="Center" Text="Output"/>
+		</Border>
+	</DockPanel>
+</UserControl>

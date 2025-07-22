@@ -1,0 +1,60 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="250"
+		Width="800" Height="250"
+        x:Class="VolexCameraInspection.ConfigWindow"
+				Background="White"
+		Foreground="Black"
+        Title="ConfigWindow"
+		xmlns:vm="clr-namespace:VolexCameraInspection.ViewModels;assembly=VolexCameraInspection"
+		x:DataType="vm:ConfigViewModel"
+		>
+	<Window.Styles>
+		<Style Selector="Border.content">
+			<Setter Property="BorderBrush" Value="Black"/>
+			<Setter Property="BorderThickness" Value="2"/>
+			<Setter Property="CornerRadius" Value="3"/>
+			<Setter Property="Padding" Value="10"/>
+		</Style>
+		<Style Selector="TextBox">
+			<Setter Property="FontSize" Value="32"/>
+			<Setter Property="BorderBrush" Value="Black"/>
+			<Setter Property="Background" Value="White"/>
+			<Setter Property="Foreground" Value="Black"/>
+			<Setter Property="CaretBrush" Value="Black"/>
+		</Style>
+		<Style Selector="TextBlock">
+			<Setter Property="FontSize" Value="32"/>
+		</Style>
+		<Style Selector="TextBox:disabled /template/ Border">
+			<Setter Property="Background" Value="WhiteSmoke"/>
+		</Style>
+		<Style Selector="Label">
+			<Setter Property="FontSize" Value="24"/>
+		</Style>
+		<Style Selector="TextBox:focus-within">
+			<Setter Property="Foreground" Value="Black"/>
+		</Style>
+		<Style Selector="TextBox:focus-within /template/ Border">
+			<Setter Property="Background" Value="White"/>
+		</Style>
+		<Style Selector="Button:pointerover /template/ ContentPresenter">
+			<Setter Property="Background" Value="Gray"/>
+		</Style>
+	</Window.Styles>
+	<DockPanel>
+		<Border Classes.content="True" Margin="5">
+			<Grid ColumnDefinitions="25*,60*,15*" RowDefinitions="Auto,Auto,Auto,auto" >
+				<TextBlock Padding="3" Margin="3" Grid.Column="0" Grid.ColumnSpan="3" FontWeight="Bold" FontSize="21" TextDecorations="Underline" Text="Config"/>
+				<TextBlock Padding="3" Margin="3"  Grid.Column="0" Grid.Row="1" TextAlignment="Left" FontSize="18" VerticalAlignment="Center" HorizontalAlignment="Stretch" Text="PLC IP:" />
+				<TextBox Text="{Binding Ip,Mode=TwoWay}" Padding="3" Margin="3" Grid.Column="1" Grid.Row="1" TextAlignment="Left" HorizontalAlignment="Stretch" HorizontalContentAlignment="Left" />
+				<TextBlock Padding="3" Margin="3" Grid.Column="0" Grid.Row="2" TextAlignment="Left" FontSize="18" VerticalAlignment="Center" HorizontalAlignment="Stretch" Text="FTP Folder:" />
+				<TextBox IsEnabled="False" Text="{Binding Ftp_Path,Mode=TwoWay}" Padding="3" Margin="3" Grid.Column="1" Grid.Row="2" TextAlignment="Left" HorizontalAlignment="Stretch" HorizontalContentAlignment="Left" />
+				<Button Content="..." Command="{Binding PickFolderCommand}" Background="WhiteSmoke" Foreground="White" BorderBrush="Black" BorderThickness="1" Margin="10,0,0,0" CornerRadius="3" Grid.Column="2" Grid.Row="2"/>	
+				<Button Background="Gray" Command="{Binding SaveCommand}" Foreground="Black" HorizontalContentAlignment="Center" BorderBrush="Black" BorderThickness="1" CornerRadius="3" Padding="10" Margin="0,10,0,0" HorizontalAlignment="Stretch" Content="Save" Grid.Column="1" Grid.Row="3" Grid.ColumnSpan="2"/>
+			</Grid>
+		</Border>
+	</DockPanel>
+</Window>
