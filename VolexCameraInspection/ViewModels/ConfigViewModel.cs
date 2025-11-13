@@ -12,23 +12,23 @@ using VolexCameraInspection.Services;
 
 namespace VolexCameraInspection.ViewModels
 {
-    public partial class ConfigViewModel: ObservableObject
+    public partial class ConfigViewModel : ObservableObject
     {
         ConfigModel Config = null!;
         [ObservableProperty]
         string ip = "";
         [ObservableProperty]
         string ftp_Path = string.Empty;
-        
+
 
         private readonly ConfigService configService;
         private readonly IFolderPickingService folderPickingService;
-        public ConfigViewModel(ConfigService configservice,IFolderPickingService pickfolderservice) 
+        public ConfigViewModel(ConfigService configservice, IFolderPickingService pickfolderservice)
         {
             configService = configservice;
             Config = configservice.Config;
             folderPickingService = pickfolderservice;
-            Ftp_Path = Config.FTP_PATH;
+            Ftp_Path = string.Join(";", Config.FTP_PATHS);
             Ip = $"{Config.PLC_IP}:{Config.PLC_PORT}";
         }
         [RelayCommand]
@@ -42,9 +42,12 @@ namespace VolexCameraInspection.ViewModels
         [RelayCommand]
         public async Task PickFolder()
         {
-            var res= await folderPickingService.PickFolder();
-            if (res != null) 
-                Config.FTP_PATH = Ftp_Path = res.LocalPath;
+            var res = await folderPickingService.PickFolder();
+            if (res != null)
+            {
+                Ftp_Path = string.Join(";", res.Select(x => x.LocalPath));
+                Config.FTP_PATHS = res.Select(x => x.LocalPath).ToArray();
+            }
         }
     }
 }

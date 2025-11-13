@@ -10,18 +10,18 @@ namespace VolexCameraInspection.Models
     {
         public string dbpath { get; set; } = string.Empty;
         public string PLC_IP { get; set; } = string.Empty;
-        public string FTP_PATH { get; set; } = string.Empty;
+        public string[] FTP_PATHS { get; set; } = [];
         public string PLC_PORT { get;set; } = string.Empty;
         public ConfigModel()
         {
 
         }
-        public ConfigModel(string _dbpath, string _PLC_IP,string _PLC_PORT, string _FTP_PATH)
+        public ConfigModel(string _dbpath, string _PLC_IP,string _PLC_PORT, string[] _FTP_PATH)
         {
             dbpath = _dbpath;
             PLC_IP = _PLC_IP;
             PLC_PORT = _PLC_PORT;
-            FTP_PATH = _FTP_PATH;
+            FTP_PATHS = _FTP_PATH;
         }
     }
 }

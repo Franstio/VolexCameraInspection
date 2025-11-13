@@ -57,7 +57,7 @@ namespace VolexCameraInspection.Services
                     return res.Replace("\0", "").Replace("\r", "").Replace("\n", "").Trim();
                 }
             }
-            catch (Exception e)
+            catch (Exception _)
             {
                 isActive = false;
                 semaphoreSlim.Release();

@@ -18,7 +18,9 @@ public static class ServiceExtension
         Type[] vm = [typeof(MainViewModel),typeof(ConfigViewModel)];
         foreach (var item in vm)
             serviceCollection.AddSingleton(item);
-
+        Type[] services = [typeof(PLCService),typeof(CameraService),typeof(TransactionService)];
+        foreach (var item in services)
+            serviceCollection.AddScoped(item);
         ConfigService configService = new ConfigService();
         configService.Load();
         serviceCollection.AddSingleton(configService);

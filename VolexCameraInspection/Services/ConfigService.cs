@@ -13,8 +13,8 @@ namespace VolexCameraInspection.Services
     {
         private const string ConfigFile = "appsettings.json";
 
-        public ConfigModel Config { get; private set; } = new ConfigModel(string.Empty, string.Empty, string.Empty,string.Empty);
-
+        public ConfigModel Config { get; private set; } = new ConfigModel(string.Empty, string.Empty, string.Empty, []);
+            
         public void Load()
         {
             string path = Path.Combine(ConfigFile);
@@ -28,7 +28,7 @@ namespace VolexCameraInspection.Services
             if (_config is not null)
             {
                 if (string.IsNullOrEmpty(_config.dbpath))
-                    Config = new ConfigModel("Host=localhost;Username=autoscrewing_usr;Password=autoscrewing_usr;Database=camerainspection", "192.168.10.1","8080","ftp\\");
+                    Config = new ConfigModel("Host=localhost;Username=autoscrewing_usr;Password=autoscrewing_usr;Database=camerainspection", "192.168.10.1", "8080", []);
                 else
                     Config = _config;
             }

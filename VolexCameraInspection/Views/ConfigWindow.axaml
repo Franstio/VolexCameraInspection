@@ -46,7 +46,7 @@
 	</Window.Styles>
 	<DockPanel>
 		<Border Classes.content="True" Margin="5">
-			<Grid ColumnDefinitions="25*,60*,15*" RowDefinitions="Auto,Auto,Auto,auto" >
+			<Grid ColumnDefinitions="25*,60*,15*" RowDefinitions="Auto,Auto,Auto,Auto" >
 				<TextBlock Padding="3" Margin="3" Grid.Column="0" Grid.ColumnSpan="3" FontWeight="Bold" FontSize="21" TextDecorations="Underline" Text="Config"/>
 				<TextBlock Padding="3" Margin="3"  Grid.Column="0" Grid.Row="1" TextAlignment="Left" FontSize="18" VerticalAlignment="Center" HorizontalAlignment="Stretch" Text="PLC IP:" />
 				<TextBox Text="{Binding Ip,Mode=TwoWay}" Padding="3" Margin="3" Grid.Column="1" Grid.Row="1" TextAlignment="Left" HorizontalAlignment="Stretch" HorizontalContentAlignment="Left" />
