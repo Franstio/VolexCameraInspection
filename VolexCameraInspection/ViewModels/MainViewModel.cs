@@ -95,7 +95,7 @@ public partial class MainViewModel : ViewModelBase,IDisposable
             string[] images = new string[LIMIT];
             Array.Fill<string>(images, Path.Combine("Assets", "camera.png"));
             var imgs = images.Select(x => new Bitmap(AssetLoader.Open(new Uri($"avares://VolexCameraInspection/{x}"))));
-            Cameras.Add(new CameraImageModel($"{name ?? foldername}", new ObservableCollection<Bitmap>(imgs)));
+            Cameras.Add(new CameraImageModel($"{ foldername}", new ObservableCollection<Bitmap>(imgs)));
         }
         else
         {
