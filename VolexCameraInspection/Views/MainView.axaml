@@ -74,55 +74,51 @@
 					</TextBox>
 				</StackPanel>
 			</Grid>
-	</Border>
-		<Border DockPanel.Dock="Top" Classes.content="True" Background="White" >
-			<TextBlock HorizontalAlignment="Stretch"  TextAlignment="Center" Text="Judgement Result"/>
 		</Border>
 
+
 		<Border  HorizontalAlignment="Stretch"  Classes.content="True" VerticalAlignment="Stretch">
-			<Grid  ColumnDefinitions="50*,50*" RowSpacing="10" RowDefinitions="10*,80*,10*" >
-				<ScrollViewer Grid.Row="0" Grid.RowSpan="2">
-					<ItemsRepeater ItemsSource="{Binding Cameras}" VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
-						<ItemsRepeater.Layout>
-							<UniformGridLayout MinRowSpacing="10" MinColumnSpacing="10" MaximumRowsOrColumns="1" ItemsStretch="Fill"  />
-						</ItemsRepeater.Layout>
-						<ItemsRepeater.ItemTemplate>
-							<DataTemplate>
-								<Border Classes.content="True" Background="White">
-									<StackPanel>
-										<TextBlock TextAlignment="Center" HorizontalAlignment="Stretch" Text="{Binding name}" FontWeight="Bold"/>
-										<ItemsRepeater VerticalAlignment="Center" ItemsSource="{Binding imageName}">
-											<ItemsRepeater.Layout>
-												<UniformGridLayout   MinRowSpacing="5" MaximumRowsOrColumns="2" ItemsJustification="SpaceBetween"  MinColumnSpacing="5" />
-											</ItemsRepeater.Layout>
-											<ItemsRepeater.ItemTemplate>
-												<DataTemplate>
-													<Border Height="300" BorderBrush="Black" Background="White" CornerRadius="3" Padding="10" BorderThickness="2"  Width="300">
-														<Image Stretch="UniformToFill"  Source="{Binding }"/>
-													</Border>
-												</DataTemplate>
-											</ItemsRepeater.ItemTemplate>
-										</ItemsRepeater>
-									</StackPanel>
-								</Border>
-							</DataTemplate>
-						</ItemsRepeater.ItemTemplate>
-					</ItemsRepeater>
-				</ScrollViewer>
-				<Border Grid.Column="1" Background="White" Margin="10" Classes.content="True">
+			<Grid  ColumnDefinitions="50*,50*" RowSpacing="10" RowDefinitions="20*,80*" >
+				<Border Grid.Column="1" Grid.Row="0"  Background="White" Margin="10" Classes.content="True">
 					<TextBlock TextAlignment="Center" VerticalAlignment="Center" >Pass/NG</TextBlock>
 				</Border>
-				<Border Padding="30" Grid.Column="1" Grid.Row="1" Background="White" Margin="10" Classes.content="True">
+				<Border Padding="30" Grid.Column="0" Grid.Row="0" Background="White" Margin="10" Classes.content="True">
 					<StackPanel>
 						<TextBlock Margin="0,0,0,30">Inspection Data:</TextBlock>
-						<TextBlock>Quantity: 0</TextBlock>
-						<TextBlock>NG: 0</TextBlock>
-						<TextBlock>OK: 0</TextBlock>
+						<StackPanel Orientation="Horizontal" Spacing="30">
+							<TextBlock>Quantity: 0</TextBlock>
+							<TextBlock>NG: 0</TextBlock>
+							<TextBlock>OK: 0</TextBlock>
+						</StackPanel>
 					</StackPanel>
 				</Border>
-				<Border Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="2" Classes.content="True" Background="White" >
-					<TextBlock HorizontalAlignment="Stretch" VerticalAlignment="Center"  TextAlignment="Center" Text="Output"/>
-				</Border>
+				<ItemsRepeater Grid.ColumnSpan="2" Grid.Row="1"  ItemsSource="{Binding Cameras}" VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
+					<ItemsRepeater.Layout>
+						<UniformGridLayout MinRowSpacing="10" MinColumnSpacing="10" MaximumRowsOrColumns="2" ItemsStretch="Fill"  />
+					</ItemsRepeater.Layout>
+					<ItemsRepeater.ItemTemplate>
+						<DataTemplate>
+							<Border Classes.content="True" Background="White">
+								<StackPanel>
+									<TextBlock TextAlignment="Center" HorizontalAlignment="Stretch" Text="{Binding name}" FontWeight="Bold"/>
+									<ItemsRepeater VerticalAlignment="Center" ItemsSource="{Binding imageName}">
+										<ItemsRepeater.Layout>
+											<UniformGridLayout ItemsJustification="SpaceEvenly" ItemsStretch="None"  MinRowSpacing="5" MaximumRowsOrColumns="2"   MinColumnSpacing="5" />
+										</ItemsRepeater.Layout>
+										<ItemsRepeater.ItemTemplate>
+											<DataTemplate>
+												<Border Width="300" Height="300" BorderBrush="Black" Background="White" CornerRadius="3" Padding="10" BorderThickness="2"  >
+													<Image    Source="{Binding }"/>
+												</Border>
+											</DataTemplate>
+										</ItemsRepeater.ItemTemplate>
+									</ItemsRepeater>
+								</StackPanel>
+							</Border>
+						</DataTemplate>
+					</ItemsRepeater.ItemTemplate>
+				</ItemsRepeater>
+
 			</Grid>
 		</Border>
 
