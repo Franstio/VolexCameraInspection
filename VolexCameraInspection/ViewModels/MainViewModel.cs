@@ -82,7 +82,7 @@ public partial class MainViewModel : ViewModelBase,IDisposable
             f.Created += async (sender,e) =>await WatchCamera(sender,e);
             f.EnableRaisingEvents = true;
             f.NotifyFilter = NotifyFilters.FileName | NotifyFilters.LastWrite;
-            f.Filter = "*.*";
+            f.Filter = "*.bmp";
             FileSystemWatchers.Add(f);
             LoadImages(foldername, i%2 == 0 ? "Front Camera" : "Back Camera");
         }
