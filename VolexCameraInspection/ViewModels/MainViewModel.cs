@@ -107,7 +107,9 @@ public partial class MainViewModel : ViewModelBase,IDisposable
                 string img = CameraService.GetImage(detail);
                 IsEnabled = true;
                 ScanPartNumber = string.Empty;
-                Cameras[index].imageName[i] = new Bitmap(img);
+                var bmp = new Bitmap(img);
+                var resize = bmp.CreateScaledBitmap(new Avalonia.PixelSize(300, 300));
+                Cameras[index].imageName[i] = resize;
             }
         }
         
