@@ -223,7 +223,7 @@ public partial class MainViewModel : ViewModelBase,IDisposable
             await Task.Delay(1000);
             var tr = TransactionQueue.Dequeue();
             tr.FinalJudgement = tr.Details.Any(x => !x.Output) ? "NG" : "PASS";
-            await transactionService.Save(tr);
+//            await transactionService.Save(tr);
         }
     }
 
