@@ -108,8 +108,7 @@ public partial class MainViewModel : ViewModelBase,IDisposable
                 IsEnabled = true;
                 ScanPartNumber = string.Empty;
                 var bmp = new Bitmap(img);
-                var resize = bmp.CreateScaledBitmap(new Avalonia.PixelSize(300, 300));
-                Cameras[index].imageName[i] = resize;
+                Cameras[index].imageName[i] = bmp;
             }
         }
         
