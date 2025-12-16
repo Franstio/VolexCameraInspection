@@ -107,8 +107,7 @@ public partial class MainViewModel : ViewModelBase,IDisposable
                 string img = CameraService.GetImage(detail);
                 IsEnabled = true;
                 ScanPartNumber = string.Empty;
-                var bmp = new Bitmap(img);
-                Cameras[index].imageName[i] = bmp;
+                Cameras[index].imageName[i] = new Bitmap(img);
             }
         }
         
