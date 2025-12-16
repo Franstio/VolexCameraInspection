@@ -107,6 +107,8 @@ public partial class MainViewModel : ViewModelBase,IDisposable
             foreach (var detail in details)
             {
                 string img = CameraService.GetImage(detail);
+                IsEnabled = true;
+                ScanPartNumber = string.Empty;
                 Cameras[index].imageName.Add(new Bitmap(img));
             }
             if (left > 0)
@@ -160,6 +162,18 @@ public partial class MainViewModel : ViewModelBase,IDisposable
             FocusWorkNumber = false;
             IsEnabled = false;
             //            await PLCService.Send(new Models.PLCItem(Models.PLCItem.PLCItemType.WR, "MR811", 1,"Start Mes"));
+
+            ClearImages();
+        }
+    }
+    void ClearImages()
+    {
+        Cameras.Clear();
+        for (int i = 0; i < ConfigService.Config.FTP_PATHS.Length; i++)
+        {
+            string foldername = new DirectoryInfo(ConfigService.Config.FTP_PATHS[i]).Name;
+
+            LoadImages(foldername);
         }
     }
     [RelayCommand]
@@ -210,14 +224,6 @@ public partial class MainViewModel : ViewModelBase,IDisposable
             var tr = TransactionQueue.Dequeue();
             tr.FinalJudgement = tr.Details.Any(x => !x.Output) ? "NG" : "PASS";
             await transactionService.Save(tr);
-            Cameras.Clear();
-            for (int i = 0; i < ConfigService.Config.FTP_PATHS.Length; i++)
-            {
-                string foldername = new DirectoryInfo(ConfigService.Config.FTP_PATHS[i]).Name;
-                IsEnabled = true;
-                ScanPartNumber = string.Empty;
-                LoadImages(foldername);
-            }
         }
     }
 

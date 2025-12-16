@@ -98,7 +98,7 @@
 					</ItemsRepeater.Layout>
 					<ItemsRepeater.ItemTemplate>
 						<DataTemplate>
-							<Border Classes.content="True" Background="White">
+							<Border Classes.content="True"  Background="White">
 								<StackPanel>
 									<TextBlock TextAlignment="Center" HorizontalAlignment="Stretch" Text="{Binding name}" FontWeight="Bold"/>
 									<ItemsRepeater VerticalAlignment="Center" ItemsSource="{Binding imageName}">
