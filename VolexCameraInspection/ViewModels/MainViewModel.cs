@@ -101,28 +101,14 @@ public partial class MainViewModel : ViewModelBase,IDisposable
         {
             details = details.Where(x => x.Type == foldername).ToArray();
             int index = Cameras.IndexOf(find);
-            Cameras[index].imageName.Clear();
-            int left = LIMIT - details.Length;
-            ObservableCollection<string> list = new ObservableCollection<string>();
-            foreach (var detail in details)
+            for (int i=0;i<details.Length;i++)
             {
+                var detail = details[i];
                 string img = CameraService.GetImage(detail);
                 IsEnabled = true;
                 ScanPartNumber = string.Empty;
-                Cameras[index].imageName.Add(new Bitmap(img));
+                Cameras[index].imageName[i] = new Bitmap(img);
             }
-            if (left > 0)
-            {
-                string[] images = new string[left];
-                Array.Fill<string>(images, Path.Combine("Assets", "camera.png"));
-
-                foreach (var i in images)
-                {
-                    Cameras[index].imageName.Add(new Bitmap(AssetLoader.Open(new Uri($"avares://VolexCameraInspection/{i}"))));
-                }
-                
-            }
-
         }
         
     }
