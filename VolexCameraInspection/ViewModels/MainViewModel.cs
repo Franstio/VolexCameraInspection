@@ -1,6 +1,7 @@
 ﻿using Avalonia.Controls;
 using Avalonia.Media.Imaging;
 using Avalonia.Platform;
+using Avalonia.Threading;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.Extensions.DependencyInjection;
@@ -19,6 +20,7 @@ namespace VolexCameraInspection.ViewModels;
 
 public partial class MainViewModel : ViewModelBase,IDisposable
 {
+    private SemaphoreSlim semaphoreSlim = new SemaphoreSlim(1, 1);
     public ObservableCollection<string> FrontImages { get; set; } = [Path.Combine("Assets","camera.png"), Path.Combine("Assets", "camera.png"), Path.Combine("Assets", "camera.png"), Path.Combine("Assets", "camera.png")];
 
     public ObservableCollection<string> BackImages { get; set; } = [Path.Combine("Assets", "camera.png"), Path.Combine("Assets", "camera.png"), Path.Combine("Assets", "camera.png"), Path.Combine("Assets", "camera.png")];
@@ -71,7 +73,7 @@ public partial class MainViewModel : ViewModelBase,IDisposable
         transactionService = trservice;
         LoadWatcher();
     }
-    private void LoadWatcher()
+    private async void LoadWatcher()
     {
         
         for (int i=0;i<ConfigService.Config.FTP_PATHS.Length;i++)
@@ -84,10 +86,10 @@ public partial class MainViewModel : ViewModelBase,IDisposable
             f.NotifyFilter = NotifyFilters.FileName | NotifyFilters.LastWrite;
             f.Filter = "*.bmp";
             FileSystemWatchers.Add(f);
-            LoadImages(foldername, i%2 == 0 ? "Front Camera" : "Back Camera");
+            await LoadImages(foldername, i%2 == 0 ? "Front Camera" : "Back Camera");
         }
     }
-    void LoadImages(string foldername,string? name=null,params TransactionCameraDetail[] details)
+    async Task LoadImages(string foldername,string? name=null,params TransactionCameraDetail[] details)
     {
         var find = Cameras.Where(x => x.name == foldername).FirstOrDefault();
         if (details.Length < 1 || find is null)
@@ -104,18 +106,28 @@ public partial class MainViewModel : ViewModelBase,IDisposable
             for (int i=0;i<details.Length;i++)
             {
                 var detail = details[i];
-                string img = CameraService.GetImage(detail);
-                IsEnabled = true;
-                ScanPartNumber = string.Empty;
-                Cameras[index].imageName[i] = new Bitmap(img);
+
+                string img = "";
+                while (img == "" || !File.Exists(img))
+                {
+                    img = CameraService.GetImage(detail);
+                    await Task.Delay(50);
+                }
+                await Dispatcher.UIThread.InvokeAsync(() =>
+                {
+                    IsEnabled = true;
+                    ScanPartNumber = string.Empty;
+                    Cameras[index].imageName[i] = new Bitmap(img);
+                });
             }
         }
+        
         
     }
 
 
     [RelayCommand]
-    public  void ScanText()
+    public  async void ScanText()
     {
         if (FocusBadge)
         {
@@ -149,17 +161,17 @@ public partial class MainViewModel : ViewModelBase,IDisposable
             IsEnabled = false;
             //            await PLCService.Send(new Models.PLCItem(Models.PLCItem.PLCItemType.WR, "MR811", 1,"Start Mes"));
 
-            ClearImages();
+            await ClearImages();
         }
     }
-    void ClearImages()
+    async Task ClearImages()
     {
         Cameras.Clear();
         for (int i = 0; i < ConfigService.Config.FTP_PATHS.Length; i++)
         {
             string foldername = new DirectoryInfo(ConfigService.Config.FTP_PATHS[i]).Name;
 
-            LoadImages(foldername);
+            await LoadImages(foldername);
         }
     }
     [RelayCommand]
@@ -181,6 +193,7 @@ public partial class MainViewModel : ViewModelBase,IDisposable
             }
             catch (TaskCanceledException _)
             {
+                Console.WriteLine(_.Message);
                 return;
             }
             catch (Exception ex)
@@ -189,27 +202,38 @@ public partial class MainViewModel : ViewModelBase,IDisposable
             }
         }
     }
-
     public  async Task WatchCamera(object sender, FileSystemEventArgs e)
     {
-        await Task.Delay(1000);
-        if (TransactionQueue.Count < 1)
-            return;
-        var item = TransactionQueue.Peek();
-        int index = item.Details.Count+1;
-        FileInfo fileInfo = new FileInfo(e.FullPath);
-        string code = $"{fileInfo.Directory!.Name[0]}{index}";
-        bool result = false;
-        item.Details.Add(new TransactionCameraDetail(item.Id, code,fileInfo!.Directory.Name,result, $"{code}{fileInfo.Extension}", DateTime.Now));
-        CameraService.SaveImage(fileInfo, item.Details.Last());
-        File.Delete(e.FullPath);
-        LoadImages(fileInfo.Directory!.Name,null, item.Details.ToArray());
-        if (item.Details.Count >= (LIMIT * 2))
+
+        try
         {
-            await Task.Delay(1000);
-            var tr = TransactionQueue.Dequeue();
-            tr.FinalJudgement = tr.Details.Any(x => !x.Output) ? "NG" : "PASS";
-//            await transactionService.Save(tr);
+            await semaphoreSlim.WaitAsync();
+            if (TransactionQueue.Count < 1)
+                return;
+            var item = TransactionQueue.Peek();
+            int index = item.Details.Count + 1;
+            FileInfo fileInfo = new FileInfo(e.FullPath);
+            string code = $"{fileInfo.Directory!.Name[0]}{index}";
+            bool result = false;
+            item.Details.Add(new TransactionCameraDetail(item.Id, code, fileInfo!.Directory.Name, result, $"{code}{fileInfo.Extension}", DateTime.Now));
+            await CameraService.SaveImage(fileInfo, item.Details.Last());
+            File.Delete(e.FullPath);
+            await LoadImages(fileInfo.Directory!.Name, null, item.Details.ToArray());
+            if (item.Details.Count >= (LIMIT * 2))
+            {
+                await Task.Delay(1000);
+                var tr = TransactionQueue.Dequeue();
+                tr.FinalJudgement = tr.Details.Any(x => !x.Output) ? "NG" : "PASS";
+                //            await transactionService.Save(tr);
+            }
+        }
+        catch(Exception ex)
+        {
+            Console.WriteLine(ex.Message);
+        }
+        finally
+        {
+            semaphoreSlim.Release();
         }
     }
 

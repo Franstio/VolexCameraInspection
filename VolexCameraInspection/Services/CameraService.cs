@@ -14,12 +14,33 @@ namespace VolexCameraInspection.Services
         public CameraService() 
         {
             
-        }  
-
-        public void SaveImage(FileInfo fileInfo,TransactionCameraDetail detail)
+        }
+        
+        bool isFileLocked(string filepath)
+        {
+            FileStream? stream = null;
+            try
+            {
+                stream = File.Open(filepath,FileMode.Open, FileAccess.ReadWrite, FileShare.None);
+            }
+            catch (IOException)
+            {
+                return true;
+            }
+            finally
+            {
+                stream?.Close();
+            }
+            return false;
+        }
+        public async Task SaveImage(FileInfo fileInfo,TransactionCameraDetail detail)
         {
             Guid[] check = [detail.Transaction_Id];
             string path = Path.Combine(basepath);
+            while (isFileLocked(fileInfo.FullName))
+            {
+                await Task.Delay(100);
+            }
             foreach (Guid c in check)
             {
                 path = Path.Combine(path, c.ToString());
